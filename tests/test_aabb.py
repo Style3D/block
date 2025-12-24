@@ -27,62 +27,39 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-########################################################################################################################
-#################################################    intrinsics.py    ##################################################
-########################################################################################################################
-
-from .intrinsic import (
-	clz,
-	block_id,
-	block_dim,
-	warp_id,
-	lane_id,
-	grid_dim,
-	thread_id,
-	threadfence,
-	shfl_xor_sync,
-)
-
-__all__ = [
-	"clz",
-	"block_id",
-	"block_dim",
-	"warp_id",
-	"lane_id",
-	"grid_dim",
-	"thread_id",
-	"threadfence",
-	"shfl_xor_sync",
-]
+import warp as wp
+import block as bk
 
 ########################################################################################################################
-####################################################    aabb.py    #####################################################
+###################################################    test_aabb    ####################################################
 ########################################################################################################################
 
-from .aabb import (
-	Aabb,
-	make_aabb,
-	make_empty_aabb,
-	aabb_merge,
-	aabb_center,
-	aabb_overlap,
-	aabb_surface_area,
-	aabb_expand_point,
-	aabb_intersect_ray,
-	aabb_contains_point,
-	aabb_intersect_segment,
-)
+def test_aabb():
+	# Make empty aabb
+	aabb = bk.make_empty_aabb()
+	assert aabb.lower == wp.vec3(+wp.inf)
+	assert aabb.upper == wp.vec3(-wp.inf)
+	
+	# Expand point
+	aabb = bk.aabb_expand_point(aabb, wp.vec3(1.0, 2.0, 3.0))
+	aabb = bk.aabb_expand_point(aabb, wp.vec3(-1.0, 0.0, 4.0))
+	assert aabb.lower == wp.vec3(-1.0, 0.0, 3.0)
+	assert aabb.upper == wp.vec3(1.0, 2.0, 4.0)
+	
+	assert bk.aabb_surface_area(aabb) == 16.0
+	assert bk.aabb_center(aabb) == wp.vec3(0.0, 1.0, 3.5)
+	assert bk.aabb_contains_point(aabb, wp.vec3(0.0, 1.0, 2.0)) == False
 
-__all__ += [
-	"Aabb",
-	"make_aabb",
-	"make_empty_aabb",
-	"aabb_merge",
-	"aabb_center",
-	"aabb_overlap",
-	"aabb_surface_area",
-	"aabb_expand_point",
-	"aabb_intersect_ray",
-	"aabb_contains_point",
-	"aabb_intersect_segment",
-]
+	aabb2 = bk.make_aabb(lower=wp.vec3(0.0, 0.0, 0.0), upper=wp.vec3(2.0, 2.0, 2.0))
+	assert aabb2.lower == wp.vec3(0.0, 0.0, 0.0)
+	assert aabb2.upper == wp.vec3(2.0, 2.0, 2.0)
+	
+	aabb3 = bk.make_aabb(lower = wp.vec3(-1.0, -1.0, -1.0), upper = wp.vec3(1.0, 1.0, 1.0))
+	assert aabb3.lower == wp.vec3(-1.0, -1.0, -1.0)
+	assert aabb3.upper == wp.vec3(1.0, 1.0, 1.0)
+	
+	ray_origin = wp.vec3(0.0, 0.0, -5.0)
+	ray_dir = wp.vec3(0.0, 0.0, 1.3)
+	inv_dr = 1.0 / ray_dir
+	hit, tmin, tmax = bk.aabb_intersect_ray(aabb3, ray_origin, inv_dr)
+	assert hit == True
