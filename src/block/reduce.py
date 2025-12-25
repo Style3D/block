@@ -28,7 +28,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import warp as wp
-from block.intrinsic import shfl_xor_sync, lane_id
+from .intrinsic import shfl_xor_sync
 
 MASK_FULL = 0xFFFFFFFF
 
@@ -175,7 +175,6 @@ def warp_reduce_min(var: wp.vec3) -> wp.vec3:
     var = wp.min(var, shfl_xor_sync(mask = MASK_FULL, var = var, lane_mask = 2))
     var = wp.min(var, shfl_xor_sync(mask = MASK_FULL, var = var, lane_mask = 1))
     return var
-
 
 ########################################################################################################################
 #############################################    Warp-Level Reduce Max    ##############################################
