@@ -41,6 +41,10 @@ from .intrinsic import (
 	thread_id,
 	threadfence,
 	shfl_xor_sync,
+	int_as_float,
+	uint_as_float,
+	float_as_int,
+	float_as_uint,
 )
 
 __all__ = [
@@ -53,6 +57,10 @@ __all__ = [
 	"thread_id",
 	"threadfence",
 	"shfl_xor_sync",
+	"int_as_float",
+	"uint_as_float",
+	"float_as_int",
+	"float_as_uint",
 ]
 
 ########################################################################################################################

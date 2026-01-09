@@ -167,3 +167,51 @@ def shfl_xor_sync(mask: int, var: wp.vec3, lane_mask: int, width: int = 32) -> w
     var.y = shfl_xor_sync(mask, var.y, lane_mask, width)
     var.z = shfl_xor_sync(mask, var.z, lane_mask, width)
     return var
+
+
+@wp.func_native("""return __int_as_float(val);""")
+def int_as_float(val: int) -> float:
+    """
+    Reinterpret the bit pattern of a 32-bit signed integer as a float.
+
+    This function performs a bitwise reinterpretation without any numeric
+    conversion. The input integer bits are returned as a float with the same
+    binary representation.
+    """
+    ...
+
+
+@wp.func_native("""return __uint_as_float(val);""")
+def uint_as_float(val: wp.uint32) -> float:
+    """
+    Reinterpret the bit pattern of a 32-bit unsigned integer as a float.
+
+    This function performs a bitwise reinterpretation without any numeric
+    conversion. The input unsigned integer bits are returned as a float with the same
+    binary representation.
+    """
+    ...
+
+
+@wp.func_native("""return __float_as_int(val);""")
+def float_as_int(val: float) -> int:
+    """
+    Reinterpret the bit pattern of a float as a 32-bit signed integer.
+
+    This function performs a bitwise reinterpretation without any numeric
+    conversion. The input float are returned as an integer with the same
+    binary representation.
+    """
+    ...
+
+
+@wp.func_native("""return __float_as_uint(val);""")
+def float_as_uint(val: float) -> wp.uint32:
+    """
+    Reinterpret the bit pattern of a float as a 32-bit unsigned integer.
+    
+    This function performs a bitwise reinterpretation without any numeric
+    conversion. The input float are returned as an unsigned integer with the same
+    binary representation.
+    """
+    ...

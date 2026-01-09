@@ -188,3 +188,36 @@ def test_launch_config():
 		assert ret_block_id_np[i] < dim // 64		# random
 		assert ret_grid_dim_np[i] == dim // 64
 		assert ret_block_dim_np[i] == 64
+
+########################################################################################################################
+#########################################    test_bitwise_reinterpretation     #########################################
+########################################################################################################################
+
+def test_bitwise_reinterpretation():
+	
+	@wp.kernel
+	def test_bitwise_reinterpretation_kernel(
+		ret_int: wp.array(dtype = int),
+		ret_uint: wp.array(dtype = wp.uint32),
+	):
+		tid = wp.tid()
+		ret_int[tid] = bk.float_as_int(bk.int_as_float(wp.int32(tid)))
+		ret_uint[tid] = bk.float_as_uint(bk.uint_as_float(wp.uint32(tid)))
+	
+	dim = 128
+	ret_int = wp.zeros(dim, dtype = int)
+	ret_uint = wp.zeros(dim, dtype = wp.uint32)
+	
+	wp.launch(
+		test_bitwise_reinterpretation_kernel,
+		inputs = [ret_int, ret_uint],
+		dim = dim,
+	)
+	
+	ret_int_np = ret_int.numpy()
+	ret_uint_np = ret_uint.numpy()
+	
+	for i in range(dim):
+		assert ret_int_np[i] == i
+		assert ret_uint_np[i] == i
+	
